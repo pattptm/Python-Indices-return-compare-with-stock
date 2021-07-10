@@ -1,0 +1,59 @@
+#Calculate portfolio indices
+import numpy as np
+import yfinance as yf
+import matplotlib
+import pandas as pd 
+
+#List indices that would like to analyze
+#^gspc= S&P500,^ixic=NASDAQ,^gdaxi=GermanDax,^ftse=FTSE
+tickers=['^gspc','^ixic','^gdaxi','^ftse']
+data= yf.download(tickers,start='1997-01-01')['Adj Close']
+print(data)
+
+#testing first row of data
+firstrow=data.iloc[0]
+print(firstrow)
+
+#Normalize data to 100= show percentage movement of price compare to base price
+#Help to know which stock perform better historicly
+normalizedata=((data/firstrow)*100).plot(figsize=(15,6))
+normalizedata.set_title('Normalize Return of Indices 1997-2021')
+normalizedata.set_ylabel('Percentage change%')
+
+#Analyze to see simple return of stock over the same time period
+srdata=((data/data.shift(1))-1)
+print('Simple Return=',srdata)
+
+#Calculate average annual return of each stock
+average_rt=srdata.mean()
+annual_rt=(average_rt)*250
+print('Annual Return=',annual_rt,'%') 
+#Analyze ranking to see who is better
+rank_annual_rt=pd.DataFrame(annual_rt)
+print('Ranking',rank_annual_rt)
+
+#----------------------------------------------------------------------------#
+
+#Compare stock price with 2 indices S&P500 and Downjones
+tickers=['amzn','^gspc','^dji']
+data2= yf.download(tickers,start='2000-01-01')['Adj Close']
+print(data2)
+
+#testing first row of data
+firstrow=data2.iloc[0]
+print(firstrow)
+
+#Normalize data to 100= show percentage movement of price compare to base price
+#help to know which stock perform better historicly
+normalizedata=((data2/firstrow)*100).plot(figsize=(15,6))
+normalizedata.set_title('Normalize Return of AMZN and Indices 2000-2021')
+normalizedata.set_ylabel('Percentage change%')
+
+#Analyze to see simple return of stock and Indices over the same time period
+srdata2=((data2/data2.shift(1))-1)
+print('Simple Return=',srdata2)
+
+#Calculate average annual return of each stock
+average_rt2=srdata2.mean()
+annual_rt2=(average_rt2)*250
+print('Annual Return=',annual_rt2,'%') 
